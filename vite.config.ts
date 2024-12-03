@@ -7,7 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, 'src'),
-      "@pages": path.resolve(__dirname, 'src/pages')
+      "@pages": path.resolve(__dirname, 'src/pages'),
+      "@shared": path.resolve(__dirname, 'src/shared'),
     }
   }
 })

@@ -10,9 +10,10 @@ const menuItems: MenuItem[] = [
 
 <template>
   <aside>
+    <h4>Logo placeholder</h4>
     <Menu :model="menuItems">
       <template #item="{item}">
-        <router-link :to="item.route">
+        <router-link class="flex w-full" :to="item.route">
           {{ item.title }}
         </router-link>
       </template>

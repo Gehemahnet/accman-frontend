@@ -24,7 +24,9 @@
     "paths": {
       "@/*": ["src/*"],
       "@pages": ["src/pages"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@shared": ["src/shared"],
+      "@shared/*": ["src/shared/*"]
     },
     "types": ["node"]
   },

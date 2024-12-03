@@ -4,10 +4,19 @@ import MainHeader from "@/shared/ui/main-header.vue";
 </script>
 
 <template>
-  <MainAside/>
-  <MainHeader/>
-  <RouterView/>
+  <div class="flex w-full">
+<!--    <MainAside/>-->
+    <div class="flex flex-col w-full">
+      <MainHeader/>
+      <main>
+        <RouterView/>
+      </main>
+    </div>
+  </div>
 </template>
 
-<style scoped>
+<style>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 </style>

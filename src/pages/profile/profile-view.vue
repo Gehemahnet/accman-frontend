@@ -3,9 +3,7 @@
 </script>
 
 <template>
-<section class="flex">
 
-</section>
 </template>
 
 <style scoped>
