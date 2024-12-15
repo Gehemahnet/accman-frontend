@@ -1,13 +1,13 @@
-import { RouteRecordRaw } from "vue-router"
-import { Routes, routePaths } from "@shared/router"
+import { RouteRecordRaw } from "vue-router";
+import { Routes, routePaths } from "@shared/router";
 
-const HomeView = () => import("@pages/home/home-view.vue")
+const HomeView = () => import("@pages/home/home-view.vue");
 
-const FinancesView = () => import("@pages/finances/finances-view.vue")
+const FinancesView = () => import("@pages/finances/finances-view.vue");
 
-const TasksView = () => import("@pages/tasks/tasks-view.vue")
+const TasksView = () => import("@pages/tasks/tasks-view.vue");
 
-const ProfileView = () => import("@pages/profile/profile-view.vue")
+const ProfileView = () => import("@pages/profile/profile-view.vue");
 
 const routes: RouteRecordRaw[] = [
   {
@@ -30,6 +30,6 @@ const routes: RouteRecordRaw[] = [
     name: "profile",
     component: ProfileView,
   },
-]
+];
 
-export default routes
+export default routes;

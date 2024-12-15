@@ -7,7 +7,7 @@ import MainHeader from "@/shared/ui/main-header.vue";
     <!--    <MainAside/>-->
     <div class="flex flex-col w-full">
       <MainHeader />
-      <main>
+      <main class="m-3">
         <RouterView />
       </main>
     </div>

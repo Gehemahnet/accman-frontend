@@ -10,4 +10,4 @@ export const routePaths = {
   [Routes.finances]: "/finances",
   [Routes.tasks]: "/tasks",
   [Routes.profile]: "/profile",
-}
+};
