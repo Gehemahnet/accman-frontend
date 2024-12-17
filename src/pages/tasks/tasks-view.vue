@@ -1,17 +1,37 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {addDays, endOfMonth, endOfWeek, startOfMonth, startOfWeek, format} from "date-fns";
+import SchedulerItem from "@pages/tasks/scheduler-item.vue";
 
-const weeks = ref<Date[][]>([]);
+interface ISchedulerDay {
+  date: Date | string;
+  tasks: []
+}
+
+const weeks = ref<ISchedulerDay[][]>([]);
 const dateData = ref({
   year: new Date().getFullYear(),
   month: new Date().getMonth() + 1,
 });
-const tasks = ref([]);
+
+
+const dailyTasks = new Map()
+// возвращать данные с бека в таком формате
+dailyTasks.set(new Date(),  [
+  {
+    text: 'test',
+    id: 'sds141'
+  },
+  {
+    text: 'test2',
+    id: 'sds141'
+  }
+])
+
 
 
 const initDate = (year: number, month: number) => {
-  const result: Date[][] = []
+  const result: ISchedulerDay[][] = []
   const firstDayOfMonth = startOfMonth(new Date(year, month - 1));
   const lastDayOfMonth = endOfMonth(firstDayOfMonth);
 
@@ -20,19 +40,24 @@ const initDate = (year: number, month: number) => {
   const calendarEnd = endOfWeek(lastDayOfMonth, {weekStartsOn: 1});
 
   // Итерация по всем дням календарного диапазона
-  let currentDate = calendarStart;
-  while (currentDate <= calendarEnd) {
-    const week: Date[] = [];
-    for (let i = 0; i < 7; i++) {
-      week.push(currentDate);
-      currentDate = addDays(currentDate, 1);
-    }
+  let currentDate: ISchedulerDay = {date: calendarStart, tasks:[]};
+  while (currentDate.date <= calendarEnd) {
+
+    // const week: ISchedulerDay[] = [];
+    // for (let i = 0; i < 7; i++) {
+      result.push(currentDate);
+      currentDate['date'] = addDays(currentDate.date, 1);
+
+    // }
     result.push(week);
   }
 
   weeks.value = result
-
 };
+
+const initTasks = () => {
+
+}
 
 initDate(dateData.value.year, dateData.value.month);
 </script>
@@ -41,12 +66,15 @@ initDate(dateData.value.year, dateData.value.month);
   <section>
     <h1>Tasks</h1>
     <article>
+      <div>{{ format(new Date(), 'MMMM') }}</div>
       <div class="flex flex-col rounded border border-state-500 divide-y divide-state-500">
         <div class="flex divide-x  divide-state-500" v-for="(week, index) in weeks">
-          <div class="flex flex-col flex-1 p-2" v-for="day in week">
-            <div v-if="!index"> {{ format(day, 'EEEE') }}</div>
-            <div>{{ format(day, 'dd') }}</div>
-          </div>
+          <SchedulerItem
+              v-for="day in week"
+              :key="day"
+              :showWeekDay="!index"
+              :day="day"
+          />
         </div>
       </div>
 
