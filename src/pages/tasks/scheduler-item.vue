@@ -2,7 +2,7 @@
 
 import {format, isToday} from "date-fns";
 
-defineProps<{showWeekDay: boolean, day: any}>()
+defineProps<{ day: any}>()
 </script>
 
 <template>
@@ -10,7 +10,6 @@ defineProps<{showWeekDay: boolean, day: any}>()
               'bg-stone-500': isToday(day.date)
             }"
        class="flex flex-col flex-1 p-2">
-    <div v-if="showWeekDay"> {{ format(day.date, 'EEEE') }}</div>
     <div>{{ format(day.date, 'dd') }}</div>
     <div></div>
   </div>
