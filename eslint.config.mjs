@@ -1,41 +1,41 @@
 import tseslint from "typescript-eslint";
 import js from "@eslint/js";
-import vueParser from 'vue-eslint-parser';
+import vueParser from "vue-eslint-parser";
 import eslintPluginVue from "eslint-plugin-vue";
 import globals from "globals";
-import stylistic from '@stylistic/eslint-plugin'
+import stylistic from "@stylistic/eslint-plugin";
 
 export default tseslint.config(
     {
-        ignores: ['**.d.ts', '**/coverage', '**/dist']
+        ignores: [ "**.d.ts", "**/coverage", "**/dist" ]
     },
     {
         extends: [
             js.configs.recommended,
             ...tseslint.configs.recommendedTypeChecked,
-            ...eslintPluginVue.configs['flat/recommended'],
+            ...eslintPluginVue.configs["flat/recommended"],
         ],
-        files: ['**/*.{ts,vue}'],
+        files: [ "**/*.{ts,vue}", "*.config.{ts,mjs}" ],
         plugins: {
             "@stylistic": stylistic
         },
         languageOptions: {
-            ecmaVersion: 'latest',
-            sourceType: 'module',
+            ecmaVersion: "latest",
+            sourceType: "module",
             globals: globals.browser,
             parser: vueParser,
             parserOptions: {
                 parser: tseslint.parser,
-                project: './tsconfig.app.json',
-                extraFileExtensions: ['.vue'],
-                sourceType: 'module',
+                project: "./tsconfig.app.json",
+                extraFileExtensions: [ ".vue" ],
+                sourceType: "module",
             },
         },
         rules: {
-            "@stylistic/semi": 'error',
-            "@stylistic/quotes": ["error", "double"],
+            "@stylistic/semi": "error",
+            "@stylistic/quotes": [ "error", "double" ],
             "@stylistic/brace-style": "error",
-            "@stylistic/array-bracket-spacing": ["error", "always"],
+            "@stylistic/array-bracket-spacing": [ "error", "always" ],
         }
     }
 );

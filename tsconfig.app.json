@@ -30,5 +30,5 @@
     },
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.ts", "eslint.config.mjs", "tailwind.config.mjs", "postcss.config.mjs"]
 }
