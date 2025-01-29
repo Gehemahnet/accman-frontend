@@ -1,16 +1,16 @@
 <script setup lang="ts">
 
-import {MenuItem} from "primevue/menuitem";
-import {Avatar, Button, Menu, Menubar} from "primevue";
-import {ref, useTemplateRef} from "vue";
-import {Routes} from "@shared/router";
+import { MenuItem } from "primevue/menuitem";
+import { Avatar, Button, Menu, Menubar } from "primevue";
+import { ref, useTemplateRef } from "vue";
+import { Routes } from "@shared/router";
 
 
 const profileMenuRef = useTemplateRef<InstanceType<typeof Menu>>("profile-menu");
 const navigationMenu = ref<MenuItem[]>([
-  {route: Routes.home, label: "Home"},
-  {route: Routes.finances, label: "Finances"},
-  {route: Routes.tasks, label: "Tasks"}
+  { route: Routes.home, label: "Home" },
+  { route: Routes.finances, label: "Finances" },
+  { route: Routes.tasks, label: "Tasks" }
 ]);
 
 const profileMenu = ref<MenuItem[]>([

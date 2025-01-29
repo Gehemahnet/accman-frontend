@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import {format, isToday} from "date-fns";
+import { format, isToday } from "date-fns";
 
-defineProps<{ day: any}>();
+defineProps<{ day: unknown }>();
 </script>
 
 <template>

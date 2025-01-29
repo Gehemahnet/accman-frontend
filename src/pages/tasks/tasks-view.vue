@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, computed} from "vue";
+import { ref, computed } from "vue";
 import {
   format,
   startOfMonth,
@@ -10,131 +10,109 @@ import {
   addMonths,
   subMonths
 } from "date-fns";
-import SchedulerItem from "@pages/tasks/scheduler-item.vue";
+import CalendarMonthly from "@pages/tasks/calendar/calendar-monthly.vue";
+import { DatePicker, InputText, Textarea, Dialog, Button } from "primevue";
+import type { CalendarType } from "@pages/tasks/calendar/calendar.types";
+
 
 const targetDate = ref(new Date());
-const currentMonth = ref(targetDate.value.getMonth());
-const currentYear = ref(targetDate.value.getFullYear());
-const daysOfWeek = ref([ "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс" ]);
+const typeOfCalendar = ref<CalendarType>("month");
 
-const monthNames = [
-  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь",
-];
+const isModalVisible = ref(false);
+const modalProps = ref<{
+  uuid?: string;
+  time?: string;
+  name: string;
+  date: Date | string;
+  description: string;
+} | null>(null);
 
-const firstDayOfCurrentMonth = computed(() => startOfMonth(new Date(currentYear.value, currentMonth.value, 1)));
-const lastDayOfCurrentMonth = computed(() => endOfMonth(new Date(currentYear.value, currentMonth.value, 1)));
-const startOfCalendar = computed(() => startOfWeek(firstDayOfCurrentMonth.value, {weekStartsOn: 1})); // Понедельник
-const endOfCalendar = computed(() => endOfWeek(lastDayOfCurrentMonth.value, {weekStartsOn: 1}));
+const calendarComponent = computed(() => CalendarMonthly);
 
-const weeks = computed(() => {
-  const weeksArray = [];
-  let currentWeek = [];
-  daysInMonth.value.forEach((day, index) => {
-    currentWeek.push(day);
-    if ((index + 1) % 7 === 0) {
-      weeksArray.push(currentWeek);
-      currentWeek = [];
-    }
-  });
-  if (currentWeek.length > 0) {
-    weeksArray.push(currentWeek);
-  }
+const currentMonth = computed(() => targetDate.value.getFullYear());
+const currentYear = computed(() => targetDate.value.getFullYear());
 
-  return weeksArray;
-});
-
-const daysInMonth = computed(() => {
-  const interval = eachDayOfInterval({start: startOfCalendar.value, end: endOfCalendar.value});
-  return interval.map(day => ({
-    date: day,
-    tasks: []
-  }));
-});
-
-const openYear = (date) => {
- // Открываем компонент текущего годового календаря с 12 месяцами
+const setTypeOfCalendar = (type: CalendarType) => {
+  typeOfCalendar.value = type;
 };
-const openWeek = (week: []) => {
+
+const setModalVisibility = (statement: boolean) => {
+  isModalVisible.value = statement;
+  modalProps.value = statement
+      ?
+      { name: "", date: new Date(), description: "" }
+      :
+      null;
+};
+
+const openWeek = (week: unknown[]) => {
   // Открываем компонент недельного календаря присвоив в переменную для недели переданный аргумент
 };
 
-const previousMonth = () => {
-  currentDate.value = subMonths(currentDate.value, 1);
-  currentMonth.value = currentDate.value.getMonth();
-  currentYear.value = currentDate.value.getFullYear();
+const createTask = () => {
+
 };
 
-const nextMonth = () => {
-  currentDate.value = addMonths(currentDate.value, 1);
-  currentMonth.value = currentDate.value.getMonth();
-  currentYear.value = currentDate.value.getFullYear();
-};
+// const previousMonth = () => {
+//   currentDate.value = subMonths(currentDate.value, 1);
+//   currentMonth.value = currentDate.value.getMonth();
+//   currentYear.value = currentDate.value.getFullYear();
+// };
+//
+// const nextMonth = () => {
+//   currentDate.value = addMonths(currentDate.value, 1);
+//   currentMonth.value = currentDate.value.getMonth();
+//   currentYear.value = currentDate.value.getFullYear();
+// };
 
-const selectDay = (day) => {
-  if (day) {
-    console.log(`Выбран день: ${day}`);
-  }
-};
+// const selectDay = (day) => {
+//   if (day) {
+//     console.log(`Выбран день: ${day}`);
+//   }
+// };
 </script>
 
 <template>
   <section>
     <h1>Tasks</h1>
-    <article>
-      <div class="flex flex-col">
-        <div class="flex justify-around">
-          <div
-            class="w-1/12 flex items-center justify-center"
-            @click="openYear"
-          >
-            {{ format(targetDate, 'MMMM') }}
-          </div>
-          <div class="flex border rounded-t-lg  w-11/12 divide-x divide-state-500">
-            <div
-              v-for="day in daysOfWeek"
-              :key="day"
-              class=" flex-1 p-2"
-            >
-              {{ day }}
-            </div>
-          </div>
+    <div class="flex">
+      <button @click="setModalVisibility(true)">
+        Create Task
+      </button>
+    </div>
+    <component
+      :is="calendarComponent"
+      :target-date
+      :current-month
+      :current-year
+      @set-calendar-type="setTypeOfCalendar"
+    />
+    <Dialog
+      v-model:visible="isModalVisible"
+      modal
+      header="Create Task"
+      class="w-1/3"
+    >
+      <form class="flex flex-col gap-4">
+        <InputText
+          v-model="modalProps.name"
+          placeholder="Title"
+        />
+        <DatePicker
+          v-model="modalProps.date"
+          placeholder="Date"
+        />
+        <Textarea
+          v-model="modalProps.description"
+          placeholder="Description"
+          class="min-h-12"
+        />
+        <div>
+          <Button @click="createTask" />
         </div>
-        <div
-          v-for="(week, index) in weeks"
-          :key="week"
-          class="flex g-1  "
-        >
-          <button
-            class="w-1/12"
-            @click="openWeek(week)"
-          >
-            {{ `${index + 1} week` }}
-          </button>
-          <div
-            class="
-          flex justify-around flex-1
-          divide-x divide-state-500
-          border-state-500
-          border-x
-          border-collapse
-          "
-            :class="{
-              'border-t': index !== 0,
-              'border-b': index === weeks.length - 1,
-              'rounded-b-lg': index === weeks.length - 1
-
-            }"
-          >
-            <SchedulerItem
-              v-for="day in week"
-              :key="day"
-              :day="day"
-            />
-          </div>
-        </div>
-      </div>
-    </article>
+        <!-- Добавить сценарий точного времени/промежутка-->
+      </form>
+    </Dialog>
   </section>
 </template>
 <style scoped />
@@ -151,18 +129,11 @@ const selectDay = (day) => {
 <!--  eachDayOfInterval,-->
 <!--  addMonths-->
 <!--} from "date-fns";-->
-<!--import SchedulerItem from "@pages/tasks/scheduler-item.vue";-->
+<!--import SchedulerItem from "@pages/tasks/calendar-day-item.vue";-->
 
 <!--interface ISchedulerDay {-->
 <!--  date: Date | string;-->
 <!--  tasks: []-->
-<!--}-->
-
-<!--enum ScheduleTypes {-->
-<!--  daily,-->
-<!--  weekly,-->
-<!--  monthly,-->
-<!--  year,-->
 <!--}-->
 
 <!--const targetDate = ref(new Date());-->
