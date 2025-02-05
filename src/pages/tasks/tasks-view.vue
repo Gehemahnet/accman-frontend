@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, defineAsyncComponent } from "vue";
 import {
   format,
   startOfMonth,
@@ -11,21 +11,15 @@ import {
   subMonths
 } from "date-fns";
 import CalendarMonthly from "@pages/tasks/calendar/calendar-monthly.vue";
-import { DatePicker, InputText, Textarea, Dialog, Button } from "primevue";
+import { Task } from "@pages/tasks/types";
 import type { CalendarType } from "@pages/tasks/calendar/calendar.types";
 
+const CreateTaskModal = defineAsyncComponent(() => import("@pages/tasks/create-task-modal.vue"));
 
 const targetDate = ref(new Date());
 const typeOfCalendar = ref<CalendarType>("month");
-
 const isModalVisible = ref(false);
-const modalProps = ref<{
-  uuid?: string;
-  time?: string;
-  name: string;
-  date: Date | string;
-  description: string;
-} | null>(null);
+const modalProps = ref<Task| null>(null);
 
 const calendarComponent = computed(() => CalendarMonthly);
 
@@ -40,7 +34,7 @@ const setModalVisibility = (statement: boolean) => {
   isModalVisible.value = statement;
   modalProps.value = statement
       ?
-      { name: "", date: new Date(), description: "" }
+      { uuid: "", name: "", date: new Date(), description: "" }
       :
       null;
 };
@@ -87,32 +81,10 @@ const createTask = () => {
       :current-year
       @set-calendar-type="setTypeOfCalendar"
     />
-    <Dialog
-      v-model:visible="isModalVisible"
-      modal
-      header="Create Task"
-      class="w-1/3"
-    >
-      <form class="flex flex-col gap-4">
-        <InputText
-          v-model="modalProps.name"
-          placeholder="Title"
-        />
-        <DatePicker
-          v-model="modalProps.date"
-          placeholder="Date"
-        />
-        <Textarea
-          v-model="modalProps.description"
-          placeholder="Description"
-          class="min-h-12"
-        />
-        <div>
-          <Button @click="createTask" />
-        </div>
-        <!-- Добавить сценарий точного времени/промежутка-->
-      </form>
-    </Dialog>
+    <CreateTaskModal
+      v-model="isModalVisible"
+      :modal-props
+    />
   </section>
 </template>
 <style scoped />
