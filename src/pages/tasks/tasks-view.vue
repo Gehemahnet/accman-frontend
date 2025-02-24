@@ -12,6 +12,7 @@ import {
 } from "date-fns";
 import CalendarMonthly from "@pages/tasks/calendar/calendar-monthly.vue";
 import { Task } from "@pages/tasks/types";
+import { useLocalStorage } from "@/composables";
 import type { CalendarType } from "@pages/tasks/calendar/calendar.types";
 
 const CreateTaskModal = defineAsyncComponent(() => import("@pages/tasks/create-task-modal.vue"));
@@ -22,6 +23,10 @@ const isModalVisible = ref(false);
 const modalProps = ref<Task| null>(null);
 
 const calendarComponent = computed(() => CalendarMonthly);
+
+const { get, set, has } = useLocalStorage();
+
+const tasks = ref<Task[]>(get<Task[]>("tasks"));
 
 const currentMonth = computed(() => targetDate.value.getFullYear());
 const currentYear = computed(() => targetDate.value.getFullYear());
@@ -43,8 +48,11 @@ const openWeek = (week: unknown[]) => {
   // Открываем компонент недельного календаря присвоив в переменную для недели переданный аргумент
 };
 
-const createTask = () => {
-
+const createTask = (task: Task) => {
+  console.log(task);
+  set<Task[]>("tasks",
+    has("tasks") ? [ ...get<Task[]>("tasks"), task ] : [ task ]
+  );
 };
 
 // const previousMonth = () => {
@@ -79,11 +87,13 @@ const createTask = () => {
       :target-date
       :current-month
       :current-year
+      :tasks
       @set-calendar-type="setTypeOfCalendar"
     />
     <CreateTaskModal
       v-model="isModalVisible"
       :modal-props
+      @create-task="createTask"
     />
   </section>
 </template>
